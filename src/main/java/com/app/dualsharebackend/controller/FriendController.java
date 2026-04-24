@@ -26,9 +26,7 @@ public class FriendController {
     public ResponseEntity<String> addFriend(@RequestBody AddFriendRequest addFriendRequest) {
         try {
 
-            String result = friendService.addFriend(
-                    addFriendRequest.getUserId(),
-                    addFriendRequest.getCode());
+            String result = friendService.addFriend(addFriendRequest);
 
             return ResponseEntity.ok(result);
 

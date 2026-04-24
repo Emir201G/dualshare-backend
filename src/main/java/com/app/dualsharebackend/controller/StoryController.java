@@ -2,10 +2,12 @@ package com.app.dualsharebackend.controller;
 
 import com.app.dualsharebackend.dto.StoryRequestDTO;
 import com.app.dualsharebackend.dto.StoryResponseDTO;
+import com.app.dualsharebackend.service.CloudinaryService;
 import com.app.dualsharebackend.service.StoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,9 +16,11 @@ import java.util.List;
 public class StoryController {
 
     private final StoryService storyService;
+    private final CloudinaryService cloudinaryService;
 
-    public StoryController(StoryService storyService) {
+    public StoryController(StoryService storyService, CloudinaryService cloudinaryService) {
         this.storyService = storyService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping("/upload")
@@ -28,6 +32,18 @@ public class StoryController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
+        }
+    }
+
+    @PostMapping("/upload-file")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String url = cloudinaryService.uploadFile(file);
+            return ResponseEntity.ok(url);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al subir archivo: " + e.getMessage());
         }
     }
 

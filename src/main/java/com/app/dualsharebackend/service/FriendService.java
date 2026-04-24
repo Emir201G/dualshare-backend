@@ -1,5 +1,6 @@
 package com.app.dualsharebackend.service;
 
+import com.app.dualsharebackend.dto.AddFriendRequest;
 import com.app.dualsharebackend.model.Friend;
 import com.app.dualsharebackend.model.User;
 import com.app.dualsharebackend.repository.FriendRepository;
@@ -17,12 +18,12 @@ public class FriendService {
 
     }
 
-    public String addFriend( Long userId,String code) {
-        User friend = userRepository.findByCode(code)
+    public String addFriend(AddFriendRequest  addFriendRequest) {
+        User friend = userRepository.findByCode(addFriendRequest.getCode())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Friend relation = new Friend();
-        relation.setUserId(userId);
+        relation.setUserId(addFriendRequest.getUserId());
         relation.setFriendId(friend.getId());
 
         friendRepository.save(relation);

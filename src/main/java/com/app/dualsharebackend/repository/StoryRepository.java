@@ -6,10 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 @Repository
 public interface StoryRepository extends CrudRepository<Story, Long> {
     List<Story> findByUserIdAndDeletedAtIsNullAndExpiresAtAfter(
             Long userId,
             LocalDateTime now
     );
+
+    List<Story> findByExpiresAtBefore(LocalDateTime now);
+
 }

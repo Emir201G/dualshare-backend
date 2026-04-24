@@ -13,6 +13,7 @@ public class Story {
     private Long id;
     private Long userId;
     @Enumerated(EnumType.STRING)
+    private String publicId;
     private MediaType mediaType;
     private String mediaUrl;
     private LocalDateTime createdAt;
