@@ -1,5 +1,7 @@
 package com.app.dualsharebackend.service;
 
+import com.app.dualsharebackend.exception.CloudinaryNotFoundException;
+import com.app.dualsharebackend.exception.CloudinaryServiceException;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -16,18 +18,32 @@ public class CloudinaryService {
         this.cloudinary = cloudinary;
     }
 
-    public String uploadFile(MultipartFile file) {
-        try {
+    public Map uploadFile(MultipartFile file) throws Exception {
+        return cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.emptyMap()
+        );
+    }
 
-            Map uploadResult = cloudinary.uploader().upload(
-                    file.getBytes(),
-                    ObjectUtils.emptyMap()
+    public void deleteFile(String publicId, String resourceType) {
+
+        try {
+            Map result = cloudinary.uploader().destroy(
+                    publicId,
+                    ObjectUtils.asMap("resource_type", resourceType)
             );
 
-            return uploadResult.get("url").toString();
+            String status = result.get("result").toString();
 
+            if ("not found".equals(status)) {
+                throw new CloudinaryNotFoundException();
+            }
+
+        } catch (
+                CloudinaryNotFoundException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Error uploading file: " + e.getMessage());
+            throw new CloudinaryServiceException();
         }
     }
 }

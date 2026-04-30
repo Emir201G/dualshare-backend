@@ -16,27 +16,34 @@ public class StoryCleanupService {
     private final StoryRepository storyRepository;
     private final Cloudinary cloudinary;
 
-    public StoryCleanupService(StoryRepository storyRepository, Cloudinary cloudinary) {
+    public StoryCleanupService(StoryRepository storyRepository,
+                               Cloudinary cloudinary) {
         this.storyRepository = storyRepository;
         this.cloudinary = cloudinary;
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(fixedRate = 10000) // cada 10 seg (testing)
     public void deleteExpiredStories() {
+
         List<Story> expiredStories =
                 storyRepository.findByExpiresAtBefore(LocalDateTime.now());
 
         for (Story story : expiredStories) {
             try {
+
+                String resourceType = story.getMediaType().name().equals("VIDEO")
+                        ? "video"
+                        : "image";
+
                 cloudinary.uploader().destroy(
                         story.getPublicId(),
-                        ObjectUtils.emptyMap()
+                        ObjectUtils.asMap("resource_type", resourceType)
                 );
 
                 storyRepository.delete(story);
 
             } catch (Exception e) {
-                System.out.println("Error eliminando story: " + e.getMessage());
+                System.out.println("Error deleting story: " + e.getMessage());
             }
         }
     }

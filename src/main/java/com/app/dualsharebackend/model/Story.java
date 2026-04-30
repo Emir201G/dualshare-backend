@@ -12,8 +12,8 @@ public class Story {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    @Enumerated(EnumType.STRING)
     private String publicId;
+    @Enumerated(EnumType.STRING)
     private MediaType mediaType;
     private String mediaUrl;
     private LocalDateTime createdAt;

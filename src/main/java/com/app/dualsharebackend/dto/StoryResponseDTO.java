@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 
 @Data
 public class StoryResponseDTO {
+    private Long id;
+    private Long userId;
     private String mediaUrl;
     private MediaType mediaType;
+    private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
-
 }
